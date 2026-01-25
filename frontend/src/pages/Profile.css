@@ -1,0 +1,22 @@
+.profile-container {
+  width: 100%;
+  padding: 15px;
+}
+
+.profile-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 500px) {
+  .profile-container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .profile-card {
+    padding: 15px;
+  }
+}
