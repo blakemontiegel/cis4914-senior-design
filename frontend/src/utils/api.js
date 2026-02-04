@@ -25,9 +25,18 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      window.location.href = '/login';
+    const { response, config } = error;
+
+    if (response?.status === 401) {
+      const url = config?.url || '';
+
+      // shouldnt redirect authpoints or errors will disappear instantly (like incorrect login info)
+      const isAuthEndpoint = url.includes('/auth/login') || url.includes('/auth/register');
+
+      if(!isAuthEndpoint) {
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }
