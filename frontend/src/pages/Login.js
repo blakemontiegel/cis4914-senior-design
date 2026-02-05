@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
+import api from '../utils/api';
 import logo from '../logo.svg';
 import './Login.css';
 
@@ -10,26 +11,43 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
   const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+
     try {
-      if (isRegistering) {
-        // TODO: implement registration API call
-        console.log('Registering with:', { username, email, password });
-        // for now, just switch to login mode after "successful" registration
-        setIsRegistering(false);
-        setEmail('');
-        setPassword('');
-      } else {
-        await login({ username, password });
-        navigate('/');
+      if(isRegistering) {
+        // call backend to create user
+        await api.post('/auth/register', {
+          username,
+          email,
+          password
+        });
+
+        // auto-login after successful registration
+        const result = await login({ username, password });
+        if(result.success) {
+          navigate('/');
+        }else {
+          setError(result.message || 'Login after registration failed.');
+        }
+      }else {
+        // login mode
+        const result = await login({ username, password });
+        if(result.success) {
+          navigate('/');
+        }else {
+          setError(result.message || 'Login failed.');
+        }
       }
-    } catch (error) {
-      // TODO: add proper error handling and user feedback
-      console.error('Authentication failed:', error);
+    } catch (err) {
+      console.error('Authentication failed:', err);
+      const message = err.response?.data?.message || (isRegistering ? 'Registration failed.' : 'Login failed.');
+      setError(message);
     }
   };
 
@@ -40,6 +58,7 @@ const Login = () => {
     setEmail('');
     setPassword('');
     setShowPassword(false);
+    setError('');
   };
 
   return (
@@ -99,6 +118,8 @@ const Login = () => {
               </button>
             </div>
           </div>
+
+          {error && <p className="error-text">{error}</p>}
           
           <button type="submit" className="login-button">
             {isRegistering ? 'Create Account' : 'Log In'}
