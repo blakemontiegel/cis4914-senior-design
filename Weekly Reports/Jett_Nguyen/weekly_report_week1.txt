@@ -1,0 +1,29 @@
+1.
+In total, through the dates of 1/15 and 1/23, I have spent around 6 hours of my time to
+this project. This includes meeting times, project planning and communication with
+teammates. My current project work schedule is built by our team meetings and any extra
+time I can find throughout the week to prepare to develop.
+
+2.
+In this early stage of development, all of us were only able to contribute to project
+planning. My specific contributions to project planning were starting an overview for our
+frontend design (colors, pages, general layout), adding Jira tasks to the board,
+establishing ground rules, defining workflows, and getting to know the team.
+
+3.
+Using information I learned in HCI, I have been well equipped to efficiently and
+accurately lay out ideas with user-centered-design/UX in mind. This will especially come
+in handy once outlining is done and the ideas can be transferred over to wireframes and
+prototypes. Additionally, the collaboration skills I have gained through the various group
+projects I have been a part of has shown. I would have never been able to effectively
+establish a strong team connection and create a concrete plan this fast a few years ago.
+My technical skills will be shown later in development.
+
+4.
+As mentioned before, I am enjoying how easy it has been to collaborate as an effect of
+getting comfortable with teamwork. Also, I’m just now solidifying my understanding of
+the MERN stack because I used it in SWE, but was the Scrum Master and was not as
+involved with the planning phase. Getting started with this project is making me realize
+that I will be spending a lot more of my time on it than I did this past week. After all, this
+is only the beginning. I hope that my previous experiences will prevent me from running
+into any problems. I look forward to this final experience at UF!
