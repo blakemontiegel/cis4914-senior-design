@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
+import api from '../utils/api';
 import logo from '../logo.svg';
 import './Login.css';
 
@@ -10,13 +11,19 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
   const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+
     try {
       if (isRegistering) {
+        // TODO: implement registration API call
+        console.log('Registering with:', { username, email, password });
+        // for now, just switch to login mode after "successful" registration
         setIsRegistering(false);
         setEmail('');
         setPassword('');
@@ -25,6 +32,7 @@ const Login = () => {
         navigate('/');
       }
     } catch (error) {
+      // TODO: add proper error handling and user feedback
       console.error('Authentication failed:', error);
     }
   };
@@ -36,6 +44,7 @@ const Login = () => {
     setEmail('');
     setPassword('');
     setShowPassword(false);
+    setError('');
   };
 
   return (
@@ -95,6 +104,8 @@ const Login = () => {
               </button>
             </div>
           </div>
+
+          {error && <p className="error-text">{error}</p>}
           
           <button type="submit" className="login-button">
             {isRegistering ? 'Create Account' : 'Log In'}

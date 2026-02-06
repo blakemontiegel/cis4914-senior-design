@@ -3,7 +3,12 @@ import { Navigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 
 const ProtectedRoute = ({ children }) => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+
+  //while checking for token
+  if(loading) {
+    return <div>Loading...</div> //should prob make this look better
+  }
 
   // if no user, redirect to login page
   if (!user) {

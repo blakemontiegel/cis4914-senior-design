@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
+import api from '../utils/api';
 
 export const AuthContext = createContext();
 
@@ -9,12 +10,15 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
+      // TODO: validate token with backend
       setUser({ token });
     }
     setLoading(false);
   }, []);
 
+  // TODO: replace with real API call
   const login = async (credentials) => {
+    // mock successful login
     const mockToken = 'mock-jwt-token';
     localStorage.setItem('token', mockToken);
     setUser({ username: credentials.username, token: mockToken });
@@ -30,6 +34,7 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     loading,
+    isAuthenticated: !!user,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

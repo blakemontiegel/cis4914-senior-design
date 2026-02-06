@@ -175,6 +175,12 @@
     transform: scale(0.95);
 }
 
+.error-text {
+    color: red;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+}
+
 @media (min-width: 500px) {
     .login-card {
         padding: 25px 20px;
