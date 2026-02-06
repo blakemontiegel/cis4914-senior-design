@@ -1,0 +1,25 @@
+1.
+In total, from 1/24 to 1/30, I have spent around 15-20 hours on this project. I had a bit
+more free time to dedicate than last week, so I spent most of that time developing the
+wireframes for the app and integrating them into the project. This time also counts
+meetings and housekeeping in GitHub and Jira.
+
+2.
+I believe I spent the most time on the project out of the group for this week, as the rest of
+the group’s responsibilities depend on my work. I am actively planning the next stages of
+development once the wireframes/wireflow are completed.
+
+3.
+I have continued to apply learning from HCI for this week. I am enjoying the process of
+research on user-centered-design to ensure the target audience is reached and satisfied.
+This comes from the combined interests in Computer Science and Public Relations,
+which I’m glad I have found a niche in. The next process of implementing the wireframes
+into code will come from experience in HCI and my current course in Internet
+Programming.
+
+4.
+I will say this is my first very thought-out and well-structured project that I have worked
+on so far, considering we are paying lots of attention to planning and making sure
+everything is set up correctly before proceeding. Getting this ingrained in my mind will
+help me be prepared for life after college when I find work. Even if I don’t have a
+technical role, the project process in general can be applied to any task I have.
