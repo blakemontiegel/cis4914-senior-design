@@ -1,0 +1,22 @@
+1.
+From 1/31 to 1/6, I have spent around 20 hours total on this project. This represents the time translating
+the wireframes to code and resolving conflicts in the pull request. Since some of the backend was implemented
+before I was supposed to merge, the conflicts built up. Overall, the project seems to be in good shape and
+developing really well.
+
+2. 
+As mentioned above, I coded all of the pages and buttons of the app based on the wireframes and wireflow.
+Additionally, the pull request was merged successfully after resolving the conflicts. In that process, we
+collaborated as a team to go over the conflicts and discuss future plans.
+
+3.
+Resolving the PR conflicts was a test of my knowledge in the git workflow. I haven’t worked in pull requests
+in a collaborative environment in a long time, so figuring out how to merge the conflicts and close the PR
+had to come back to me. I also used practical implementation skills learned in multiple coursed in order to
+accurately code the frontend.
+
+4.
+All in all, I realized I need to constantly refresh my skills in anything I want to retain. This was
+realized through my PR techniques because they were inefficient. This doesn’t apply to just technical skills;
+it can just apply to life skills, like how I was good at doing card tricks when I was younger, but now I cannot
+remember anything. Skills are retained through repetition and improvement.
