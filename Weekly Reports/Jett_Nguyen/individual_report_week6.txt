@@ -1,0 +1,7 @@
+1. From 2/4 to 2/20, I have spent around 5 hours total on this project. It was a light week this week because most of my responsibilities have been done before. We started the new sprint this week and the first steps are to develop more of the backend. I will have more time contributed in the next week when more of the backend is done.
+
+2. I planned out what I will do for the frontend integration of new backend features. The new ones are the easy file uploader, creating new matches easier, and creating a feed. I plan to develop higher fidelity wireframes for these in the coming week and developing them if time allows.
+
+3. I have continued applying my knowledge in wireframing and project planning. I am not a full-stack developer, but I feel that through my learning in previous classes, I have the mentality to perceive the project from a wider angle.
+
+4. This week I learned that even if I do not spend a lot of time on a project, it doesn’t mean that I am slacking off. It is part of the collaborative process when you have a designated role. I can still contribute to the project, but it is not very good to work ahead in case backend features are not implemented as I intended.
