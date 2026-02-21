@@ -1,0 +1,15 @@
+﻿Week 6
+Name: Frank Malatesta | Group: Trainers
+Time Dedicated to the Project
+The following is an estimate of the amount of time I spent on each task this week:
+* Weekly group meeting: ~30 minutes
+* Creating backend structure for video storage in database: ~2 hours 
+Staying consistent with our weekly group meetings will keep our team committed and focused towards completing our project.
+Contribution to the Project Development Process
+I worked on the backend structure for allowing videos to be stored into our database. This was done through the storage of the video URL. I worked on physically storing the videos so they can be queried and their URL returned.
+I still have to incorporate the pieces operating in the backend so that the frontend requests can make changes to the database accordingly and upload and receive videos.
+Demonstration of Applied Knowledge
+I used my knowledge of MongoDB to create an effective structure for our database storage of videos via backend systems.
+I continued to research and work into the physical storage of videos and how that can be used in tandem with the work in the backend for video retrieval.
+Reflection and Lessons Learned
+As we continue to get more work from other classes as the semester intensifies, we will have to remain dedicated to the project to not let our effort slip. I think if we continue to motivate each other and plan clearly and early, we will steer away from many potential issues we would otherwise face.
