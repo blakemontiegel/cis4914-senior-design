@@ -1,0 +1,51 @@
+.video-uploader {
+    padding: 5px 0 0;
+}
+
+.video-uploader-title {
+    margin: 0 0 10px;
+    font-size: 18px;
+    color: var(--color-text);
+}
+
+.mobile-upload-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.mobile-file-label,
+.mobile-upload-btn {
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    color: var(--color-text);
+    background: var(--color-surface-2);
+    font-size: 14px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.2s;
+}
+
+.mobile-file-label:hover,
+.mobile-upload-btn:hover {
+    background: var(--color-surface-3);
+}
+
+.mobile-upload-btn {
+    background: var(--color-accent);
+}
+
+.mobile-upload-btn:hover {
+    background: var(--color-accent-hover);
+}
+
+.mobile-file-input {
+    display: none;
+}
+
+.upload-meta {
+    margin: 5px 0 0;
+    font-size: 12px;
+    color: var(--color-text-muted);
+}
