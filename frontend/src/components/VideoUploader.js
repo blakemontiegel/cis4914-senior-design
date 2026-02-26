@@ -10,6 +10,8 @@ export default function VideoUploader() {
   const uppyRef = useRef(null);
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+
     const uppy = new Uppy({
       id: "video-uploader",
       restrictions: {
@@ -19,9 +21,14 @@ export default function VideoUploader() {
       autoProceed: false,
     });
 
+    uppyRef.current = uppy;
+
     uppy.use(XHRUpload, {
-      endpoint: "http://localhost:3000/VideoUpload",
+      endpoint: "http://localhost:5000/videos/",
       fieldName: "files",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     uppy.use(Dashboard, {
