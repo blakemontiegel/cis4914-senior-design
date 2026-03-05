@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+const testEmailRoutes = require('./routes/testEmail');
 
 const app = express();
 
@@ -21,6 +22,7 @@ const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/test-email', testEmailRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
