@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Modal from '../components/Modal';
+import VideoUploader from '../components/VideoUploader';
 import './GameDetails.css';
 
 const GameDetails = () => {
@@ -32,14 +33,6 @@ const GameDetails = () => {
       month: 'long', 
       day: 'numeric' 
     });
-  };
-
-  const handleUploadFromGallery = () => {
-    setShowUploadModal(false);
-  };
-
-  const handleRecordVideo = () => {
-    setShowUploadModal(false);
   };
 
   const quickTags = ['Goal', 'Save', 'Half', 'Great play'];
@@ -114,17 +107,10 @@ const GameDetails = () => {
       <Modal
         isOpen={showUploadModal}
         onClose={() => setShowUploadModal(false)}
-        title="Upload Footage"
+        title="Upload from device"
       >
-        <div className="upload-options">
-          <div className="upload-option" onClick={handleUploadFromGallery}>
-            <i className="fas fa-images"></i>
-            <span>Choose from Gallery</span>
-          </div>
-          <div className="upload-option" onClick={handleRecordVideo}>
-            <i className="fas fa-video"></i>
-            <span>Record Video</span>
-          </div>
+        <div className="game-upload-panel">
+          <VideoUploader />
         </div>
       </Modal>
 

@@ -315,6 +315,10 @@
     border-radius: 5px;
 }
 
+.game-upload-panel {
+    padding-bottom: 10px;
+}
+
 @media (min-width: 500px) {
     .game-details-page {
         max-width: 700px;

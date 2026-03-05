@@ -87,6 +87,96 @@
     margin: 0;
 }
 
+.section-divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--color-text-muted);
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    filter: drop-shadow(0 0 5px var(--color-shadow-white));
+}
+
+.section-divider::before,
+.section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--color-border);
+}
+
+.feed-card {
+    background: var(--color-surface-3);
+    border-radius: 15px;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+}
+
+.feed-header {
+    width: 100%;
+    border: none;
+    background: transparent;
+    color: var(--color-text);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--color-border);
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.feed-header:hover {
+    background: var(--color-surface-2);
+}
+
+.feed-header h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    filter: none;
+}
+
+.feed-content {
+    padding: 10px;
+}
+
+.feed-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--color-text);
+    border-radius: 10px;
+    padding: 10px;
+    border: 1px solid transparent;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.feed-item:hover {
+    background: var(--color-surface-2);
+    border-color: var(--color-border);
+}
+
+.feed-main {
+    margin: 0;
+    font-size: 14px;
+}
+
+.feed-sub {
+    margin: 4px 0 0;
+    color: var(--color-text-muted);
+    font-size: 12px;
+}
+
+.feed-date {
+    color: var(--color-text-muted);
+    font-size: 12px;
+    white-space: nowrap;
+}
+
 @media (min-width: 500px) {
     .home-container {
         max-width: 600px;
@@ -98,11 +188,23 @@
         font-size: 20px;
     }
 
+    .feed-header h2 {
+        font-size: 20px;
+    }
+
     .recent-game {
         padding: 15px 10px;
     }
 
     .recent-game .opponent {
+        font-size: 16px;
+    }
+
+    .feed-item {
+        padding: 15px 10px;
+    }
+
+    .feed-main {
         font-size: 16px;
     }
 }
