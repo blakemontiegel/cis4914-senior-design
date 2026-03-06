@@ -6,6 +6,9 @@ const Video = require('../models/Video');
 const s3 = require('../config/s3');
 const auth = require('../middleware/authMiddleware');
 
+const { GetObjectCommand } = require('@aws-sdk/client-s3');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
+
 const router = express.Router();
 
 const upload = multer({
@@ -64,5 +67,31 @@ router.get('/', auth, async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+router.get('/:id/play', auth, async (req, res) => {
+  try {
+    const video = await Video.findById(req.params.id);
+
+    if (!video) {
+      return res.status(404).json({ message: 'Video not found' });
+    }
+
+    const command = new GetObjectCommand({
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: video.s3Key,
+    });
+
+    const signedUrl = await getSignedUrl(s3, command, {
+      expiresIn: 3600, // Expires in 1 hour
+    });
+
+    res.json({ url: signedUrl });
+
+  } catch (err) {
+    console.error('Video playback error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 
 module.exports = router;

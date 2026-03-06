@@ -48,7 +48,7 @@ export default function VideoUploader() {
     uppyRef.current = uppy;
 
     uppy.use(XHRUpload, {
-      endpoint: "http://localhost:5000/videos/",
+      endpoint: "http://localhost:5001/videos/",
       fieldName: "files",
       headers: {
         Authorization: `Bearer ${token}`,
