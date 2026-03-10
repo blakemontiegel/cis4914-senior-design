@@ -1,0 +1,14 @@
+﻿Week 8
+Name: Frank Malatesta | Group: Trainers
+Time Dedicated to the Project
+The following is an estimate of the amount of time I spent on each task this week:
+* Weekly group meeting: ~30 minutes
+* Allow videos to be played in frontend: ~5 hours 
+Staying consistent with our weekly group meetings will keep our team committed and focused towards completing our project.
+Contribution to the Project Development Process
+I created the functionality that allowed for videos to be played in the frontend after being queried. This was an expansion of the work I had done in the previous week where the videos were stored in the database after being uploaded. Now, the videos are able to be returned back to the frontend and are playable by users.
+Demonstration of Applied Knowledge
+I used my knowledge of React and Express to carry out full stack development. I was having trouble understanding certain parts of code which my teammates had provided to me and used my knowledge of debugging to methodically test individual components which might not have been working so that I could get my functionality to succeed in the end.
+Reflection and Lessons Learned
+I feel more comfortable learning new software and services after this week. I think that things that seem daunting aren’t so bad when you take the time to learn how each part interacts with the greater system.
+As we continue to get more work from other classes as the semester intensifies, we will have to remain dedicated to the project to not let our effort slip. I think if we continue to motivate each other and plan clearly and early, we will steer away from many potential issues we would otherwise face.

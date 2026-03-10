@@ -1,0 +1,17 @@
+﻿Week 7
+Name: Frank Malatesta | Group: Trainers
+Time Dedicated to the Project
+The following is an estimate of the amount of time I spent on each task this week:
+* Weekly group meeting: ~30 minutes
+* Set up AWS infrastructure including S3 bucket: ~2 hours
+* Send videos to database via frontend functionality: ~5 hours 
+Staying consistent with our weekly group meetings will keep our team committed and focused towards completing our project.
+Contribution to the Project Development Process
+I created an AWS root account for our needs in S3 and potentially Lambda. I created a bucket in S3 and created an IAM that would allow our backend to communicate with AWS and properly store all our raw data.
+I created the functionality that allowed for videos to be uploaded via the frontend and then be received in our raw data storage with an associated entry in our database so it can be accessed later.
+Demonstration of Applied Knowledge
+I learned how to use AWS. These were services I was unfamiliar with prior to this project. I feel as if I now have a fundamental understanding of how the system works and how it can be used to help build our project.
+I also continue to learn more about Git, particularly the .gitignore and how to troubleshoot issues I was encountering. Some sensitive files were accidentally in our repository so they had to be removed so that they could be properly ignored by Git.
+Reflection and Lessons Learned
+I feel more comfortable learning new software and services after this week. I think that things that seem daunting aren’t so bad when you take the time to learn how each part interacts with the greater system.
+As we continue to get more work from other classes as the semester intensifies, we will have to remain dedicated to the project to not let our effort slip. I think if we continue to motivate each other and plan clearly and early, we will steer away from many potential issues we would otherwise face.

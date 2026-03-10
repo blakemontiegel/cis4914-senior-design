@@ -1,0 +1,7 @@
+1. From 2/21 to 2/27, I have spent around 6 hours total on this project. It was a bit more than last week because I more coding this time. The time includes planning, meeting, and working on the project. I have kept up my consistency by working on it nearly every day, even if I have little to do.
+
+2. I helped in team collaboration and implementing frontend designs. With the progress we have been making, we have found some additional features that may be useful in the app, such as a “Forgot password?” button. The specific changes I made to the code were creating the design of the feed on the home page, styling it, and integrating the video uploader into the pre-existing button for it.
+
+3. Looking back to my previous internship experience, I see parallels in the workflow of software engineering. In my experience, I learned to collaborate across teams, and this project is no different, since I am considering views from potential end users and even backend developers. Synchronicity and harmony is what helps the project become cohesive.
+
+4. Reflecting on this week, noticing that I forgot to include a “Forgot password?” button was eye-opening to me that I was thinking more on aesthetic appearance than actual user experience. If I make these types of mistakes again, it’s not the end of the world. That is what collaboration is all about; getting outsider perspectives is essential to having a truly user-centered design.
