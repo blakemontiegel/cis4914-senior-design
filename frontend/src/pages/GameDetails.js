@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Modal from '../components/Modal';
 import VideoUploader from '../components/VideoUploader';
 import './GameDetails.css';
+import axios from 'axios';
 
 const GameDetails = () => {
   const { gameId } = useParams();
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [currentClip, setCurrentClip] = useState(0);
   const [selectedTag, setSelectedTag] = useState(null);
+  const [clips, setClips] = useState([]);
+  const [videoUrl, setVideoUrl] = useState(null);
 
   const game = {
     id: gameId,
@@ -16,13 +19,6 @@ const GameDetails = () => {
     opponent: 'Team 2',
     date: '2026-01-20'
   };
-
-  const clips = [
-    { id: '1', thumbnail: null, duration: '2:34' },
-    { id: '2', thumbnail: null, duration: '1:45' },
-    { id: '3', thumbnail: null, duration: '3:12' },
-    { id: '4', thumbnail: null, duration: '0:58' },
-  ];
 
   const formatDate = (dateStr) => {
     const [year, month, day] = dateStr.split('-').map(Number);
@@ -37,6 +33,46 @@ const GameDetails = () => {
 
   const quickTags = ['Goal', 'Save', 'Half', 'Great play'];
 
+  useEffect(() => {
+    const fetchVideos = async () => {
+      try {
+        const res = await axios.get('http://localhost:5001/videos', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+      });
+
+        setClips(res.data);
+      } catch (err) {
+        console.error('Error fetching videos:', err);
+      }
+    };
+
+    fetchVideos();
+  }, []);
+
+  useEffect(() => {
+    const fetchPlaybackUrl = async () => {
+      if (!clips[currentClip]) return;
+
+      try {
+        const res = await axios.get(
+          `http://localhost:5001/videos/${clips[currentClip]._id}/play`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+          }
+        );
+
+        setVideoUrl(res.data.url);
+      } catch (err) {
+        console.error('Error getting playback URL:', err);
+      }
+    };
+    fetchPlaybackUrl();
+  }, [currentClip, clips]);
+
   return (
     <div className="game-details-page">
       <div className="game-matchup">
@@ -45,14 +81,27 @@ const GameDetails = () => {
           <span className="vs">vs</span>
           <span>{game.opponent}</span>
         </h1>
+        <p>Total clips: {clips.length}</p>
         <p className="matchup-date">{formatDate(game.date)}</p>
       </div>
 
       <div className="main-player">
         <div className="video-container">
-          <div className="video-placeholder">
-            <i className="fas fa-play"></i>
-          </div>
+          {videoUrl ? (
+            <video
+              className="video-player"
+              controls
+              width="100%"
+              key={videoUrl}
+            >
+              <source src={videoUrl} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          ) : (
+            <div className="video-placeholder">
+              <i className="fas fa-play"></i>
+            </div>
+          )}
         </div>
         <div className="video-controls">
           <input
@@ -91,7 +140,7 @@ const GameDetails = () => {
         <div className="clips-grid">
           {clips.map((clip, index) => (
             <div
-              key={clip.id}
+              key={clip._id}
               className={`clip-card ${currentClip === index ? 'active' : ''}`}
               onClick={() => setCurrentClip(index)}
             >
