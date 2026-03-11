@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import Modal from '../components/Modal';
 import api from '../utils/api';
+import { formatMonthYear, formatShortDate } from '../utils/date';
 import './Team.css';
 
 const Team = () => {
@@ -24,12 +25,8 @@ const Team = () => {
   const isOwner = (team?.membershipRole || '').toLowerCase() === 'owner';
 
   const toGameView = (match) => {
-    const normalizedDate = new Date(match.date);
-    const date = normalizedDate.toISOString().slice(0, 10);
-    const month = normalizedDate.toLocaleDateString('en-US', {
-      month: 'long',
-      year: 'numeric',
-    });
+    const date = match.date;
+    const month = formatMonthYear(match.date);
 
     return {
       id: match._id,
@@ -152,9 +149,7 @@ const Team = () => {
   };
 
   const formatDate = (dateStr) => {
-    const [year, month, day] = dateStr.split('-').map(Number);
-    const date = new Date(year, month - 1, day);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    return formatShortDate(dateStr);
   };
 
   const handleDeleteTeam = async () => {

@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import api from '../utils/api';
 import Modal from '../components/Modal';
+import { formatShortDate } from '../utils/date';
 import { getViewedMatchIdSet } from '../utils/viewedMatches';
 import './Home.css';
 
@@ -167,11 +168,7 @@ const Home = () => {
     }
   };
 
-  const formatDate = (dateStr) => {
-    const [year, month, day] = dateStr.split('-').map(Number);
-    const date = new Date(year, month - 1, day);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  };
+  const formatDate = (dateStr) => formatShortDate(dateStr);
 
   const toggleSection = (sectionKey) => {
     setOpenSections((prev) => ({

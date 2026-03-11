@@ -39,7 +39,6 @@ app.get('/', (req, res) => {
     res.json({message: 'API is running'});
 });
 
-app.use('/videos', videoRoutes);
 app.use('/api/videos', videoRoutes);
 
 const authRoutes = require('./routes/auth');
