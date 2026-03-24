@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import api from '../utils/api';
 import logo from '../logo.svg';
@@ -12,29 +12,64 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
+  const [showResendVerification, setShowResendVerification] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const verifyToken = searchParams.get('verifyToken');
+  const hasVerifiedToken = useRef(false);
+
+  useEffect(() => {
+  if (!verifyToken || hasVerifiedToken.current) return;
+
+  hasVerifiedToken.current = true;
+
+  const verifyEmail = async () => {
+    try {
+      const res = await api.get(`/auth/verify-email?token=${encodeURIComponent(verifyToken)}`);
+      setMessage(res.data.message || 'Email verified successfully. You can now log in.');
+      setError('');
+      setIsRegistering(false);
+      setShowResendVerification(false);
+
+      const nextParams = new URLSearchParams(searchParams);
+      nextParams.delete('verifyToken');
+      setSearchParams(nextParams, { replace: true });
+    } catch (err) {
+      console.error('Email verification failed:', err);
+      setError(err.response?.data?.message || 'Email verification failed.');
+      setMessage('');
+
+      const nextParams = new URLSearchParams(searchParams);
+      nextParams.delete('verifyToken');
+      setSearchParams(nextParams, { replace: true });
+    }
+  };
+
+  verifyEmail();
+}, [verifyToken]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setMessage('');
+    setShowResendVerification(false);
 
     try {
       if(isRegistering) {
         // call backend to create user
-        await api.post('/auth/register', {
+        const res = await api.post('/auth/register', {
           username,
           email,
-          password
+          password,
         });
 
-        // auto-login after successful registration
-        const result = await login({ username, password });
-        if(result.success) {
-          navigate('/');
-        }else {
-          setError(result.message || 'Login after registration failed.');
-        }
+        setMessage(
+          res.data?.message || 'Account created. Check your email to verify your account.'
+        );
+        setIsRegistering(false);
+        setPassword('');
       }else {
         // login mode
         const result = await login({ username, password });
@@ -42,12 +77,20 @@ const Login = () => {
           navigate('/');
         }else {
           setError(result.message || 'Login failed.');
+          if (result.requiresEmailVerification) {
+            setShowResendVerification(true);
+          }
         }
       }
     } catch (err) {
       console.error('Authentication failed:', err);
       const message = err.response?.data?.message || (isRegistering ? 'Registration failed.' : 'Login failed.');
       setError(message);
+      setMessage('');
+
+      if (err.response?.data?.requiresEmailVerification) {
+        setShowResendVerification(true);
+      }
     }
   };
 
@@ -59,11 +102,29 @@ const Login = () => {
     setPassword('');
     setShowPassword(false);
     setError('');
+    setMessage('');
+    setShowResendVerification(false);
   };
 
   const handleForgotPassword = () => {
     setError('Password reset is not available yet.');
+    setMessage('');
   };
+
+  const handleResendVerification = async () => {
+    setError('');
+    setMessage('');
+
+    try {
+      await api.post('/auth/resend-verification', { email });
+      setMessage('Verification email sent. Please check your inbox.');
+      setShowResendVerification(false);
+    } catch (err) {
+      console.error('Resend verification failed:', err);
+      setError(err.response?.data?.message || 'Could not resend verification email.');
+    }
+  };
+
 
   return (
     <div className="login-container">
@@ -124,19 +185,33 @@ const Login = () => {
           </div>
 
           {error && <p className="error-text">{error}</p>}
+          {message && <p className="success-text">{message}</p>}
           
           <button type="submit" className="login-button">
             {isRegistering ? 'Create Account' : 'Log In'}
           </button>
 
           {!isRegistering && (
-            <button
-              type="button"
-              className="forgot-password-button"
-              onClick={handleForgotPassword}
-            >
-              Forgot your password?
-            </button>
+            <>
+              <button
+                type="button"
+                className="forgot-password-button"
+                onClick={handleForgotPassword}
+              >
+                Forgot your password?
+              </button>
+
+              {showResendVerification && (
+                <button
+                  type="button"
+                  className="forgot-password-button"
+                  onClick={handleResendVerification}
+                  disabled={!email}
+                >
+                  Resend verification email
+                </button>
+              )}
+            </>
           )}
         </form>
         

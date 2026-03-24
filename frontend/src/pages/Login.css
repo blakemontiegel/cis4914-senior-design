@@ -200,6 +200,12 @@
     transform: scale(0.95);
 }
 
+.success-text {
+  color: #1f9d55;
+  text-align: center;
+  margin-top: 10px;
+}
+
 .error-text {
     color: red;
     margin-top: 0.5rem;
