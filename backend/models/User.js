@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema(
         emailVerificationExpires: { type: Date, default: null },
         passwordResetTokenHash: { type: String, default: null },
         passwordResetExpires: { type: Date, default: null },
+        profilePicture: { type: String, default: null, }
     },
     { timestamps: true }
 );

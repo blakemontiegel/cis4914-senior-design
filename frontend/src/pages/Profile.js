@@ -5,10 +5,11 @@ import { AuthContext } from '../context/AuthContext';
 import useAuth from '../hooks/useAuth';
 import api from '../utils/api';
 import './Profile.css';
+import ImageUploader from '../components/ImageUploader';
 
 const Profile = () => {
   const navigate = useNavigate();
-  const { logout } = useContext(AuthContext);
+  const { logout } = useContext(AuthContext); 
   const { user, updateUser } = useAuth();
 
   const [name, setName] = useState('');
@@ -24,6 +25,7 @@ const Profile = () => {
   const [form, setForm] = useState({ primary: '', secondary: '', tertiary: '' });
   const [payload, setPayload] = useState(null);
   const [childTeamId, setChildTeamId] = useState('');
+  const [profilePicUrl, setProfilePicUrl] = useState("");
 
   const loadProfileLists = async () => {
     setLoadingData(true);
@@ -77,6 +79,21 @@ const Profile = () => {
   useEffect(() => {
     loadProfileLists();
   }, []);
+
+  useEffect(() => {
+    const fetchProfilePic = async () => {
+      try {
+        const res = await api.get('/images/me');
+        setProfilePicUrl(res.data.url);
+      } catch (err) {
+        console.error("Failed to load profile pic", err);
+      }
+    };
+
+    if (user?.profilePicture) {
+      fetchProfilePic();
+    }
+  }, [user]);
 
   const openModal = (type, data = {}) => {
     setModalType(type);
@@ -319,7 +336,26 @@ const Profile = () => {
         )}
 
         {modalType === 'photo' && (
-          <p className="value">Mark your photo as updated.</p>
+          <ImageUploader
+            onUploadSuccess={(data) => {
+              setPhotoStatus('Photo updated');
+
+              if (data?.user) {
+                updateUser(data.user);
+              }
+
+              setTimeout(async () => {
+                try {
+                  const res = await api.get('/images/me');
+                  setProfilePicUrl(res.data.url);
+                } catch (err) {
+                  console.error(err);
+                }
+              }, 300);
+
+              closeModal();
+            }}
+          />
         )}
 
         {modalType === 'reset' && (
@@ -436,10 +472,12 @@ const Profile = () => {
 
         {profileError && <p className="profile-error-text">{profileError}</p>}
 
-        <div className="modal-actions">
-          <button className="pill-btn ghost" onClick={closeModal}>Cancel</button>
-          <button className="pill-btn" onClick={saveModal}>Save</button>
-        </div>
+        {modalType !== 'photo' && (
+          <div className="modal-actions">
+            <button className="pill-btn ghost" onClick={closeModal}>Cancel</button>
+            <button className="pill-btn" onClick={saveModal}>Save</button>
+          </div>
+        )}
       </Modal>
     );
   };
@@ -468,7 +506,15 @@ const Profile = () => {
           <div className="row">
             <div>
               <p className="label">Profile photo</p>
-              <p className="value">{photoStatus}</p>
+                {user?.profilePicture ? (
+                  <img
+                    src={profilePicUrl || "https://via.placeholder.com/120"}
+                    alt="Profile"
+                    className="profile-avatar"
+                  />
+                ) : (
+                  <p className="value">{photoStatus}</p>
+                )}
             </div>
             <button className="pill-btn" onClick={changePhoto}>Change</button>
           </div>
