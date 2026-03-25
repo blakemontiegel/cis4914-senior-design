@@ -159,3 +159,10 @@ p {
     padding: 20px;
   }
 }
+
+.header-profile-pic {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
