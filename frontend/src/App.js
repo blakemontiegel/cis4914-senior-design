@@ -11,16 +11,34 @@ import Login from './pages/Login';
 import Profile from './pages/Profile';
 import Team from './pages/Team';
 import GameDetails from './pages/GameDetails';
-
-import { AuthProvider } from './context/AuthContext';
+import { useEffect, useState } from 'react';
+import api from './utils/api';
+import { AuthProvider, useAuth } from './context/AuthContext';
 
 function AppContent() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const [profilePicUrl, setProfilePicUrl] = useState("");
 
   const showBackButton = ['/profile', '/team'].some(path => 
     location.pathname.startsWith(path)
   );
+
+  useEffect(() => {
+    const fetchProfilePic = async () => {
+      try {
+        const res = await api.get('/images/me');
+        setProfilePicUrl(res.data.url);
+      } catch (err) {
+        console.error("Failed to load profile pic", err);
+      }
+    };
+
+    if (user?.profilePicture) {
+      fetchProfilePic();
+    }
+  }, [user]);
 
   const showProfileButton = location.pathname !== '/login';
   const showHeader = location.pathname !== '/login';
@@ -38,9 +56,17 @@ function AppContent() {
             <img src={logo} alt="Sideline" className="brand-logo" />
             <span className="brand-text">Sideline</span>
           </Link>
-          {showProfileButton && (
+          {showProfileButton && user && (
             <Link to="/profile" className="header-profile-btn" aria-label="Profile">
-              <i className="fas fa-user"></i>
+              {user?.profilePicture ? (
+                <img
+                  src={profilePicUrl || "https://via.placeholder.com/40"}
+                  alt="Profile"
+                  className="header-profile-pic"
+                />
+              ) : (
+                <i className="fas fa-user"></i>
+              )}
             </Link>
           )}
         </header>

@@ -1,0 +1,10 @@
+.image-uploader {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.upload-btn {
+  padding: 8px 12px;
+  cursor: pointer;
+}
