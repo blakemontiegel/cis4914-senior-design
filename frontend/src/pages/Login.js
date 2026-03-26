@@ -19,6 +19,7 @@ const Login = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isSendingReset, setIsSendingReset] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -72,6 +73,7 @@ useEffect(() => {
     setError('');
     setMessage('');
     setShowResendVerification(false);
+    setIsSubmitting(true);
 
     try {
       if(isRegistering) {
@@ -108,6 +110,8 @@ useEffect(() => {
       if (err.response?.data?.requiresEmailVerification) {
         setShowResendVerification(true);
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -206,7 +210,12 @@ useEffect(() => {
         <form onSubmit={handleSubmit} className="login-form">
           {(!showForgotPassword || resetPasswordMode) && (
             <div className="form-group">
-              <label htmlFor="username" className="form-label">Username <span style={{ fontSize: "16px", color: "var(--color-text-muted)" }}>or Email</span></label>
+              <label htmlFor="username" className="form-label">
+                Username
+                {!isRegistering && !resetPasswordMode && (
+                  <span style={{ fontSize: "16px", color: "var(--color-text-muted)", marginLeft: "6px" }}>or Email</span>
+                )}
+              </label>
               {!resetPasswordMode ? (
                 <input
                   type="text"
@@ -215,6 +224,7 @@ useEffect(() => {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   required
+                  disabled={isSubmitting}
                 />
               ) : (
                 <div id="username" className="username-static">{username || '—'}</div>
@@ -233,6 +243,7 @@ useEffect(() => {
                 onChange={(e) => setEmail(e.target.value)}
                 required={isRegistering}
                 placeholder={showResendVerification && !isRegistering ? 'Enter your email to resend verification' : ''}
+                disabled={isSubmitting}
               />
             </div>
           )}
@@ -248,6 +259,7 @@ useEffect(() => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  disabled={isSubmitting}
                 />
                 <button
                   type="button"
@@ -265,8 +277,8 @@ useEffect(() => {
           {message && <p className="success-text">{message}</p>}
           
           {!resetPasswordMode && !showForgotPassword && (
-            <button type="submit" className="login-button">
-              {isRegistering ? 'Create Account' : 'Log In'}
+            <button type="submit" className="login-button" disabled={isSubmitting}>
+              {isSubmitting ? (isRegistering ? 'Creating account…' : 'Logging in…') : (isRegistering ? 'Create Account' : 'Log In')}
             </button>
           )}
 
@@ -354,6 +366,7 @@ useEffect(() => {
             type="button" 
             className="create-account-button"
             onClick={toggleMode}
+            disabled={isSubmitting}
           >
             {isRegistering ? 'Already have an account?\nLog In' : 'Create an Account'}
           </button>

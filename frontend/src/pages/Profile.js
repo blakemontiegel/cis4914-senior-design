@@ -506,12 +506,14 @@ const Profile = () => {
           <div className="row">
             <div>
               <p className="label">Profile photo</p>
-                {user?.profilePicture ? (
+                {user?.profilePicture && profilePicUrl ? (
                   <img
-                    src={profilePicUrl || "https://via.placeholder.com/120"}
+                    src={profilePicUrl}
                     alt="Profile"
                     className="profile-avatar"
                   />
+                ) : user?.profilePicture ? (
+                  <p className="value">Loading profile photo...</p>
                 ) : (
                   <p className="value">{photoStatus}</p>
                 )}
