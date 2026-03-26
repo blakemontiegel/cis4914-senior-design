@@ -20,6 +20,8 @@ function AppContent() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [profilePicUrl, setProfilePicUrl] = useState("");
+  const [displayLocation, setDisplayLocation] = useState(location);
+  const [transitionStage, setTransitionStage] = useState('entered');
 
   const showBackButton = ['/profile', '/team'].some(path => 
     location.pathname.startsWith(path)
@@ -40,27 +42,46 @@ function AppContent() {
     }
   }, [user]);
 
+  useEffect(() => {
+    if (location.pathname === displayLocation.pathname) return;
+
+    // Launch exit transition first
+    setTransitionStage('exiting');
+    const exitTimer = setTimeout(() => {
+      setDisplayLocation(location);
+      setTransitionStage('entering');
+      const enterTimer = setTimeout(() => {
+        setTransitionStage('entered');
+      }, 150);
+      return () => clearTimeout(enterTimer);
+    }, 200);
+
+    return () => clearTimeout(exitTimer);
+  }, [location, displayLocation]);
+
   const showProfileButton = location.pathname !== '/login';
   const showHeader = location.pathname !== '/login';
 
   return (
     <div className="App">
       {showHeader && (
-        <header className="app-header">
+        <header className={`app-header ${showBackButton ? 'has-back' : 'no-back'}`}>
           {showBackButton && (
             <button className="header-back-btn" onClick={() => navigate(-1)}>
               <i className="fas fa-arrow-left"></i>
             </button>
           )}
-          <Link to="/" className="brand-mark">
-            <img src={logo} alt="Sideline" className="brand-logo" />
-            <span className="brand-text">Sideline</span>
-          </Link>
+          <div className={`brand-container ${showBackButton ? 'center' : 'left'}`}>
+            <Link to="/" className="brand-mark">
+              <img src={logo} alt="Sideline" className="brand-logo" />
+              <span className="brand-text">Sideline</span>
+            </Link>
+          </div>
           {showProfileButton && user && (
             <Link to="/profile" className="header-profile-btn" aria-label="Profile">
-              {user?.profilePicture ? (
+              {user?.profilePicture && profilePicUrl ? (
                 <img
-                  src={profilePicUrl || "https://via.placeholder.com/40"}
+                  src={profilePicUrl}
                   alt="Profile"
                   className="header-profile-pic"
                 />
@@ -72,8 +93,8 @@ function AppContent() {
         </header>
       )}
 
-      <div className="container">
-        <Routes>
+      <div className={`container page-transition page-${transitionStage}`}>
+        <Routes location={displayLocation}>
           <Route path="/login" element={<Login />} />
           <Route
             path="/"

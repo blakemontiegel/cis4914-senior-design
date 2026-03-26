@@ -168,6 +168,16 @@
     transform: scale(0.95);
 }
 
+.login-button:disabled {
+    background: var(--color-accent);
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.login-button:disabled:hover {
+    background: var(--color-accent);
+}
+
 .forgot-password-button {
     margin-top: 10px;
     display: block;
