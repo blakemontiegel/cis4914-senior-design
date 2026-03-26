@@ -7,6 +7,7 @@ import './Login.css';
 
 const Login = () => {
   const [isRegistering, setIsRegistering] = useState(false);
+  const [isResettingPassword, setIsResettingPassword] = useState(false);
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -14,11 +15,14 @@ const Login = () => {
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [showResendVerification, setShowResendVerification] = useState(false);
+  const [showForgotPasswordEmail, setShowForgotPasswordEmail] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const verifyToken = searchParams.get('verifyToken');
+  const resetToken = searchParams.get('resetToken');
   const hasVerifiedToken = useRef(false);
+  const hasHandledResetToken = useRef(false);
 
   useEffect(() => {
   if (!verifyToken || hasVerifiedToken.current) return;
@@ -31,6 +35,7 @@ const Login = () => {
       setMessage(res.data.message || 'Email verified successfully. You can now log in.');
       setError('');
       setIsRegistering(false);
+      setIsResettingPassword(false);
       setShowResendVerification(false);
 
       const nextParams = new URLSearchParams(searchParams);
@@ -50,6 +55,18 @@ const Login = () => {
   verifyEmail();
 }, [verifyToken]);
 
+useEffect(() => {
+    if (!resetToken || hasHandledResetToken.current) return;
+
+    hasHandledResetToken.current = true;
+    setIsRegistering(false);
+    setIsResettingPassword(true);
+    setShowForgotPasswordEmail(false);
+    setShowResendVerification(false);
+    setError('');
+    setMessage('Enter your new password.');
+  }, [resetToken]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -57,6 +74,22 @@ const Login = () => {
     setShowResendVerification(false);
 
     try {
+      if (isResettingPassword) {
+        const res = await api.post('/auth/reset-password', {
+          token: resetToken,
+          password,
+        });
+
+        setMessage(res.data?.message || 'Password reset successfully. You can now log in.');
+        setIsResettingPassword(false);
+        setPassword('');
+
+        const nextParams = new URLSearchParams(searchParams);
+        nextParams.delete('resetToken');
+        setSearchParams(nextParams, { replace: true });
+        return;
+      }
+
       if(isRegistering) {
         // call backend to create user
         const res = await api.post('/auth/register', {
@@ -104,11 +137,29 @@ const Login = () => {
     setError('');
     setMessage('');
     setShowResendVerification(false);
+    setShowForgotPasswordEmail(false);
   };
 
-  const handleForgotPassword = () => {
-    setError('Password reset is not available yet.');
+  const handleForgotPassword = async () => {
+    setError('');
     setMessage('');
+
+    if (!showForgotPasswordEmail) {
+      setShowForgotPasswordEmail(true);
+      return;
+    }
+
+    try {
+      const res = await api.post('/auth/forgot-password', { email });
+      setMessage(
+        res.data?.message ||
+          'If an account with that email exists, a password reset link has been sent.'
+      );
+      setShowForgotPasswordEmail(false);
+    } catch (err) {
+      console.error('Forgot password failed:', err);
+      setError(err.response?.data?.message || 'Could not process password reset request.');
+    }
   };
 
   const handleResendVerification = async () => {
@@ -148,7 +199,7 @@ const Login = () => {
             />
           </div>
           
-          {isRegistering && (
+          {(isRegistering || showResendVerification || showForgotPasswordEmail) && (
             <div className="form-group">
               <label htmlFor="email" className="form-label">Email</label>
               <input
@@ -157,7 +208,7 @@ const Login = () => {
                 className="form-input"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                required
+                required={isRegistering || showResendVerification || showForgotPasswordEmail}
               />
             </div>
           )}
@@ -184,21 +235,31 @@ const Login = () => {
             </div>
           </div>
 
+          {(isRegistering || isResettingPassword) && (
+            <p className="password-hint">
+              Must be at least 8 characters and include uppercase, lowercase, number, and special characters.
+            </p>
+          )}
+
           {error && <p className="error-text">{error}</p>}
           {message && <p className="success-text">{message}</p>}
           
           <button type="submit" className="login-button">
-            {isRegistering ? 'Create Account' : 'Log In'}
+            {isResettingPassword
+              ? 'Set New Password'
+              : isRegistering
+              ? 'Create Account'
+              : 'Log In'}
           </button>
 
-          {!isRegistering && (
+          {!isRegistering && !isResettingPassword && (
             <>
               <button
                 type="button"
                 className="forgot-password-button"
                 onClick={handleForgotPassword}
               >
-                Forgot your password?
+                {showForgotPasswordEmail ? 'Send password reset email' : 'Forgot your password?'}
               </button>
 
               {showResendVerification && (
@@ -215,13 +276,15 @@ const Login = () => {
           )}
         </form>
         
-        <button 
-          type="button" 
-          className="create-account-button"
-          onClick={toggleMode}
-        >
-          {isRegistering ? 'Already have an account?\nLog In' : 'Create an Account'}
-        </button>
+        {!isResettingPassword && (
+          <button
+            type="button"
+            className="create-account-button"
+            onClick={toggleMode}
+          >
+            {isRegistering ? 'Already have an account?\nLog In' : 'Create an Account'}
+          </button>
+        )}
       </div>
     </div>
   );

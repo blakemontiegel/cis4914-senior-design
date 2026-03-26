@@ -200,6 +200,13 @@
     transform: scale(0.95);
 }
 
+.password-hint {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 8px;
+  text-align: left;
+}
+
 .success-text {
   color: #1f9d55;
   text-align: center;
