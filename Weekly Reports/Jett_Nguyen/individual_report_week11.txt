@@ -1,0 +1,7 @@
+1. From 3/13 to 3/27, I have spent around 30 hours total on this project. This took up two weeks due to spring break. I was less consistent in my days worked because of the time off, but on the days where I had ideas and could work on it, I did so.
+
+2. I worked on tying together two pull requests from Dominic and Blake, which included adding email verification and profile picture upload and display. On top of those features, I added password reset from Blake’s logic and persistency of profile pictures using Dominic’s logic. With these things, I also cleaned up the UI/UX with better transitions and clearer user feedback.
+
+3. I had to apply my knowledge of git to be able to cleanly checkout both pull requests, add my own changes, then consolidate the pull requests into one. This was a little harder than it seemed, but I got it to work using my fork and a branch within it. Additionally, communicating between roles is one of the things I have been honing since I have experience in both, but want to shift my focus to frontend.
+
+4. Despite the time taken off for the previous week, I feel the groove was still easy to get back into. I familiarized myself with the project a lot beforehand, so it is not easy to forget where I am at. Consistency really does work in the long run if you want to know the ins and outs and have the ability to take over if ever needed.
