@@ -58,6 +58,7 @@ input, textarea, select,
 }
 
 html, body, #root {
+  overscroll-behavior: none;
   background-color: var(--color-bg);
 }
 
@@ -115,24 +116,25 @@ p {
 }
 
 .app-header {
-  }
-
-  .app-header::before {
-    content: '';
-    display: block;
-    position: absolute;
-    top: -40px;
-    left: 0;
-    right: 0;
-    height: 40px;
-    background: rgba(0, 0, 0, 0.75);
-    pointer-events: none;
-    z-index: -1;
   position: sticky;
   top: 0;
   z-index: 100;
   background-color: rgba(0, 0, 0, 0.75);
   padding-top: env(safe-area-inset-top);
+  position: relative;
+}
+
+.app-header::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: -40px;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: rgba(0, 0, 0, 0.75);
+  pointer-events: none;
+  z-index: 0;
 }
 
 .header-inner {
