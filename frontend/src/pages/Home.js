@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import api from '../utils/api';
 import Modal from '../components/Modal';
 import { formatShortDate } from '../utils/date';
+import useDelayedLoadingIndicator from '../hooks/useDelayedLoadingIndicator';
 import './Home.css';
 
 const Home = () => {
@@ -18,6 +19,7 @@ const Home = () => {
   const [joinError, setJoinError] = useState('');
   const [showTeamActionModal, setShowTeamActionModal] = useState(false);
   const [teamActionTab, setTeamActionTab] = useState('create');
+  const showDashboardLoadingIndicator = useDelayedLoadingIndicator(loading, 1000);
 
   const [openSections, setOpenSections] = useState({
     recentGames: false,
@@ -216,7 +218,7 @@ const Home = () => {
 
       {error && <p className="home-error-text">{error}</p>}
 
-      {loading && <p className="no-games">Loading dashboard...</p>}
+      {showDashboardLoadingIndicator && <p className="no-games">Loading dashboard...</p>}
       
       <div className="teams-list">
         {!loading && teams.length === 0 && (

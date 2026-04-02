@@ -12,7 +12,13 @@ const profilePictureRoutes = require('./routes/images');
 
 const app = express();
 
-const allowedOrigins = (process.env.CLIENT_ORIGIN || '')
+const clientOriginEnv = process.env.CLIENT_ORIGIN;
+
+if (!clientOriginEnv) {
+    throw new Error('Missing CLIENT_ORIGIN. Set it in your environment.');
+}
+
+const allowedOrigins = clientOriginEnv
     .split(',')
     .map((origin) => origin.trim().replace(/\/+$/, ''))
     .filter(Boolean);

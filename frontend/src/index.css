@@ -6,3 +6,18 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+html,
+body,
+#root {
+  touch-action: manipulation;
+}
+
+@media (max-width: 900px) {
+  input,
+  select,
+  textarea,
+  button {
+    font-size: 16px;
+  }
+}
