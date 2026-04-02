@@ -8,18 +8,14 @@ const { sendVerificationEmail, sendPasswordResetEmail } = require('../utils/emai
 const router = express.Router();
 
 const VERIFICATION_TOKEN_HOURS = 24;
+const CLIENT_APP_URL = 'https://jettnguyen.github.io/Sideline';
 
 const makeToken = () => crypto.randomBytes(32).toString('hex');
 const hashToken = (token) =>
     crypto.createHash('sha256').update(token).digest('hex');
 
 const buildTokenUrl = (token, param) => {
-    const clientBase =
-        process.env.CLIENT_APP_URL ||
-        process.env.CLIENT_ORIGIN?.split(',')[0]?.trim() ||
-        'http://localhost:3000';
-
-    return `${clientBase}/#/login?${param}=${token}`;
+    return `${CLIENT_APP_URL}/#/login?${param}=${token}`;
 };
 
 
@@ -64,11 +60,19 @@ router.post('/register', async (req, res) => {
 
         const verificationUrl = buildTokenUrl(rawToken, 'verifyToken');
 
-        await sendVerificationEmail({
-            to: user.email,
-            username: user.username,
-            verificationUrl,
-        });
+        try {
+            await sendVerificationEmail({
+                to: user.email,
+                username: user.username,
+                verificationUrl,
+            });
+        } catch (emailErr) {
+            console.error('Registration verification email failed:', emailErr);
+            await User.deleteOne({ _id: user._id });
+            return res.status(500).json({
+                message: 'Could not send verification email. Please try registering again.',
+            });
+        }
 
         res.status(201).json({
             message: 'Account created. Please check your email to verify your account.',
