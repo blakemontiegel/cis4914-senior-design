@@ -1,0 +1,7 @@
+1. From 3/27 to 4/3, I have spent around 20 hours total on this project. I worked on it in bursts and I believe I only skipped a day, which was Tuesday.
+
+2. One pull request of mine combined a few pull requests from my other team members. They added profile picture and email additions, while I touched them up. There were a few other commits in the PR, that had to do with page transitions, user experience improvements, and adding Dependabot to keep dependencies up to date.
+
+3. Using my knowledge learned in Internet Programming, a class I am taking alongside this one, page transitions and animations were heavily stressed. Additionally, I learned from media that loading states are commonly unconsidered and misunderstood. I took both of those previous knowledge pieces into account by adding page transitions and animations to hide loading states when needed. However, they should not be hidden all the time so that users don’t think the app is not working.
+
+4. I have been reflecting to myself that I feel I have taken the “ownership” of this project. I consider it mine, even though it is all of ours in the group. I feel I have put a lot of passion into it, especially when I feel that I have put myself in the shoes of the target audience while developing and curating it. I am not sure how I should proceed with applying my findings to my future products, but I look forward to seeing how accomplished my teammates will feel once this project has been submitted and turned in.
