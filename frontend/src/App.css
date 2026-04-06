@@ -32,7 +32,7 @@
   --color-shadow-white: rgba(255, 255, 255, 0.2);
 
   --page-transition-distance: 15px;
-  --page-transition-duration: 0.35s;
+  --page-transition-duration: 0.3s;
   --page-transition-ease: cubic-bezier(0.20, 0.60, 0.35, 1);
 }
 

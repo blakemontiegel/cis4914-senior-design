@@ -14,7 +14,7 @@ const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const router = express.Router();
 
 const upload = multer({
-  limits: { fileSize: 500 * 1024 * 1024 }, // 500MB limit
+  limits: { fileSize: 100 * 1024 * 1024 }, // 100MB limit
 });
 
 router.post(
@@ -27,6 +27,10 @@ router.post(
 
       if (!matchId || !mongoose.Types.ObjectId.isValid(matchId)) {
         return res.status(400).json({ message: 'Valid matchId is required' });
+      }
+
+      if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded or file exceeds 100MB limit' });
       }
 
       const match = await Match.findById(matchId);

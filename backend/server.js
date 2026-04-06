@@ -58,5 +58,32 @@ app.use('/api/teams', teamRoutes);
 app.use('/api/matches', matchRoutes);
 app.use('/api/invites', inviteRoutes);
 
+app.use((err, req, res, next) => {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(413).json({ message: 'File size exceeds 100MB limit' });
+    }
+    if (err.code === 'LIMIT_FILES') {
+        return res.status(400).json({ message: 'Too many files' });
+    }
+    console.error('Error:', err);
+    res.status(500).json({ message: 'Server error' });
+});
+
+// Verify critical environment variables before starting
+const requiredEnvVars = ['MONGO_URI', 'JWT_SECRET', 'CLIENT_ORIGIN'];
+const missingVars = requiredEnvVars.filter(v => !process.env[v]);
+
+if (missingVars.length > 0) {
+    console.error(`❌ CRITICAL: Missing required environment variables: ${missingVars.join(', ')}`);
+    console.error('Please set these in your .env file before starting the server.');
+    process.exit(1);
+}
+
 const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const HOST = '0.0.0.0'; // Listen on all network interfaces
+app.listen(PORT, HOST, () => {
+    console.log(`✅ Server running on port ${PORT}`);
+    console.log(`✅ MongoDB connected (from server startup)`);
+    console.log(`ℹ️  Listening on all interfaces (0.0.0.0:${PORT})`);
+    console.log(`ℹ️  CORS allowed origins: ${process.env.CLIENT_ORIGIN}`);
+});

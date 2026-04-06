@@ -53,9 +53,9 @@ function AppContent() {
       setTransitionStage('entering');
       const enterTimer = setTimeout(() => {
         setTransitionStage('entered');
-      }, 150);
+      }, 300);
       return () => clearTimeout(enterTimer);
-    }, 200);
+    }, 275);
 
     return () => clearTimeout(exitTimer);
   }, [location, displayLocation]);

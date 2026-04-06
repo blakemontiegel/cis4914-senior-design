@@ -59,23 +59,16 @@ router.post('/register', async (req, res) => {
         });
 
         const verificationUrl = buildTokenUrl(rawToken, 'verifyToken');
-
-        try {
-            await sendVerificationEmail({
-                to: user.email,
-                username: user.username,
-                verificationUrl,
-            });
-        } catch (emailErr) {
+        sendVerificationEmail({
+            to: user.email,
+            username: user.username,
+            verificationUrl,
+        }).catch((emailErr) => {
             console.error('Registration verification email failed:', emailErr);
-            await User.deleteOne({ _id: user._id });
-            return res.status(500).json({
-                message: 'Could not send verification email. Please try registering again.',
-            });
-        }
+        });
 
         res.status(201).json({
-            message: 'Account created. Please check your email to verify your account.',
+            message: 'Account created. Please check your email to verify your account. If email does not arrive, use "Resend verification" on the login page.',
             requiresEmailVerification: true,
         });
     } catch (err) {
@@ -160,13 +153,15 @@ router.post('/resend-verification', async (req, res) => {
 
         const verificationUrl = buildTokenUrl(rawToken, 'verifyToken');
 
-        await sendVerificationEmail({
+        sendVerificationEmail({
             to: user.email,
             username: user.username,
             verificationUrl,
+        }).catch((emailErr) => {
+            console.error('Resend verification email failed:', emailErr);
         });
 
-        res.json({ message: 'Verification email sent' });
+        res.json({ message: 'Verification email sent (or queued). Please check your inbox.' });
     } catch (err) {
         console.error('Resend verification error:', err);
         res.status(500).json({ message: 'Server error' });
@@ -197,16 +192,12 @@ router.post('/request-password-reset', async (req, res) => {
 
         const resetUrl = buildTokenUrl(rawToken, 'resetToken');
 
-        try {
-            await sendPasswordResetEmail({ to: user.email, username: user.username, resetUrl });
-        } catch (emailErr) {
-            console.error('Password reset email send failed:', emailErr);
-            return res.status(502).json({
-                message: 'Password reset email could not be sent. Please try again shortly.',
+        sendPasswordResetEmail({ to: user.email, username: user.username, resetUrl })
+            .catch((emailErr) => {
+                console.error('Password reset email send failed:', emailErr);
             });
-        }
 
-        res.json({ message: 'Password reset email sent' });
+        res.json({ message: 'Password reset email sent (or queued). Check your inbox.' });
     } catch (err) {
         console.error('Request password reset error:', err);
         res.status(500).json({ message: 'Server error' });
@@ -278,6 +269,11 @@ router.post('/login', async (req, res) => {
                 message: 'Please verify your email before logging in.',
                 requiresEmailVerification: true,
             });
+        }
+
+        if (!process.env.JWT_SECRET) {
+            console.error('CRITICAL: JWT_SECRET environment variable not set');
+            return res.status(500).json({ message: 'Server configuration error. Please contact support.' });
         }
 
         const token = jwt.sign(
