@@ -64,7 +64,10 @@ router.post('/register', async (req, res) => {
             username: user.username,
             verificationUrl,
         }).catch((emailErr) => {
-            console.error('Registration verification email failed:', emailErr);
+            console.warn(
+                'Registration verification email failed:',
+                emailErr?.code || emailErr?.message || 'unknown-error'
+            );
         });
 
         res.status(201).json({
@@ -158,7 +161,10 @@ router.post('/resend-verification', async (req, res) => {
             username: user.username,
             verificationUrl,
         }).catch((emailErr) => {
-            console.error('Resend verification email failed:', emailErr);
+            console.warn(
+                'Resend verification email failed:',
+                emailErr?.code || emailErr?.message || 'unknown-error'
+            );
         });
 
         res.json({ message: 'Verification email sent (or queued). Please check your inbox.' });
@@ -194,7 +200,10 @@ router.post('/request-password-reset', async (req, res) => {
 
         sendPasswordResetEmail({ to: user.email, username: user.username, resetUrl })
             .catch((emailErr) => {
-                console.error('Password reset email send failed:', emailErr);
+                console.warn(
+                    'Password reset email send failed:',
+                    emailErr?.code || emailErr?.message || 'unknown-error'
+                );
             });
 
         res.json({ message: 'Password reset email sent (or queued). Check your inbox.' });

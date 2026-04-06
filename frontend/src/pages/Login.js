@@ -239,7 +239,7 @@ useEffect(() => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required={isRegistering || showForgotPassword}
-                placeholder={showResendVerification && !isRegistering ? 'Leave blank to use username if needed' : ''}
+                placeholder={showResendVerification && !isRegistering ? 'Email (optional)' : ''}
                 autoComplete="email"
                 disabled={isSubmitting}
               />
