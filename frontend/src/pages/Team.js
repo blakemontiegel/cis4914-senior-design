@@ -34,12 +34,10 @@ const Team = () => {
   // Member action sheet
   const [selectedMember, setSelectedMember] = useState(null);
   const [showMemberSheet, setShowMemberSheet] = useState(false);
-  const [memberSheetOffsetY, setMemberSheetOffsetY] = useState(0);
   const [memberClips, setMemberClips] = useState([]);
   const [loadingMemberClips, setLoadingMemberClips] = useState(false);
   const [memberClipThumbUrls, setMemberClipThumbUrls] = useState({});
   const [showMemberClipsModal, setShowMemberClipsModal] = useState(false);
-  const memberSheetDragRef = useRef({ active: false, startY: 0, pointerId: null, offsetY: 0 });
 
   // Invite modal
   const [showInviteModal, setShowInviteModal] = useState(false);
@@ -79,6 +77,7 @@ const Team = () => {
   const showMemberClipsLoadingIndicator = useDelayedLoadingIndicator(loadingMemberClips, 1000);
 
   const canRemoveMember = (member) => {
+    if (!member) return false;
     if (!isOwnerOrCoach) return false;
     if (myRole === 'coach' && ['owner', 'coach'].includes(member.role)) return false;
     if (member.role === 'owner' && member.user?._id === user?._id) return false;
@@ -264,47 +263,6 @@ const Team = () => {
     setSelectedMember(member);
     setShowMemberSheet(true);
   };
-
-  const handleMemberSheetPointerDown = (e) => {
-    if (e.pointerType === 'mouse' && e.button !== 0) return;
-    memberSheetDragRef.current = {
-      active: true,
-      startY: e.clientY,
-      pointerId: e.pointerId,
-      offsetY: 0,
-    };
-    setMemberSheetOffsetY(0);
-    e.currentTarget.setPointerCapture?.(e.pointerId);
-  };
-
-  const handleMemberSheetPointerMove = (e) => {
-    const drag = memberSheetDragRef.current;
-    if (!drag.active || drag.pointerId !== e.pointerId) return;
-    const diff = e.clientY - drag.startY;
-    const offsetY = diff > 0 ? diff : 0;
-    memberSheetDragRef.current.offsetY = offsetY;
-    setMemberSheetOffsetY(offsetY);
-  };
-
-  const handleMemberSheetPointerEnd = (e) => {
-    const drag = memberSheetDragRef.current;
-    if (!drag.active || drag.pointerId !== e.pointerId) return;
-    const draggedDistance = drag.offsetY;
-    memberSheetDragRef.current = { active: false, startY: 0, pointerId: null, offsetY: 0 };
-    e.currentTarget.releasePointerCapture?.(e.pointerId);
-
-    if (draggedDistance > 70) {
-      setShowMemberSheet(false);
-    }
-    setMemberSheetOffsetY(0);
-  };
-
-  useEffect(() => {
-    if (!showMemberSheet) {
-      setMemberSheetOffsetY(0);
-      memberSheetDragRef.current = { active: false, startY: 0, pointerId: null, offsetY: 0 };
-    }
-  }, [showMemberSheet]);
 
   const handleViewMemberClips = async (member) => {
     setShowMemberSheet(false);
@@ -539,13 +497,17 @@ const Team = () => {
 
       {!loading && members.length > 0 && (
         <div className="roster-section team-enter-item" style={{ '--enter-delay': '70ms' }}>
-          <div className="roster-header">
+          <div
+            className="roster-header"
+            onClick={() => setIsRosterCollapsed(!isRosterCollapsed)}
+            style={{ cursor: 'pointer' }}
+          >
             <div>
               <p className="roster-heading">Roster <span className="roster-count">{members.length}</span></p>
             </div>
             <button
               className="roster-toggle-btn"
-              onClick={() => setIsRosterCollapsed(!isRosterCollapsed)}
+              onClick={(e) => { e.stopPropagation(); setIsRosterCollapsed(!isRosterCollapsed); }}
               aria-label={isRosterCollapsed ? 'Expand roster' : 'Collapse roster'}
             >
               <i className={`fas fa-chevron-${isRosterCollapsed ? 'down' : 'up'}`} />
@@ -652,44 +614,30 @@ const Team = () => {
         ))}
       </div>
 
-      {showMemberSheet && selectedMember && (
-        <div className="sheet-overlay" onClick={() => setShowMemberSheet(false)}>
-          <div
-            className="action-sheet"
-            onClick={(e) => e.stopPropagation()}
-            style={memberSheetOffsetY > 0 ? { transform: `translateY(${memberSheetOffsetY}px)` } : undefined}
+      <Modal
+        isOpen={showMemberSheet && !!selectedMember}
+        onClose={() => setShowMemberSheet(false)}
+        title={selectedMember?.user?.username}
+      >
+        <p className="sheet-member-role">{selectedMember?.role}</p>
+        <button
+          className="sheet-btn"
+          onClick={() => handleViewMemberClips(selectedMember)}
+        >
+          <i className="fas fa-film" /> View Clips
+        </button>
+        {canRemoveMember(selectedMember) && (
+          <button
+            className="sheet-btn danger"
+            onClick={() => handleRemoveMember(selectedMember)}
           >
-            <div
-              className="sheet-handle-area"
-              onPointerDown={handleMemberSheetPointerDown}
-              onPointerMove={handleMemberSheetPointerMove}
-              onPointerUp={handleMemberSheetPointerEnd}
-              onPointerCancel={handleMemberSheetPointerEnd}
-            >
-              <div className="sheet-handle" />
-            </div>
-            <p className="sheet-member-name">{selectedMember.user?.username}</p>
-            <p className="sheet-member-role">{selectedMember.role}</p>
-            <button
-              className="sheet-btn"
-              onClick={() => handleViewMemberClips(selectedMember)}
-            >
-              <i className="fas fa-film" /> View Clips
-            </button>
-            {canRemoveMember(selectedMember) && (
-              <button
-                className="sheet-btn danger"
-                onClick={() => handleRemoveMember(selectedMember)}
-              >
-                <i className="fas fa-user-minus" /> Remove from Team
-              </button>
-            )}
-            <button className="sheet-btn cancel" onClick={() => setShowMemberSheet(false)}>
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
+            <i className="fas fa-user-minus" /> Remove from Team
+          </button>
+        )}
+        <button className="sheet-btn cancel" onClick={() => setShowMemberSheet(false)}>
+          Cancel
+        </button>
+      </Modal>
 
       <Modal
         isOpen={showMemberClipsModal}

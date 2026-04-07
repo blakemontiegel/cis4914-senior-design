@@ -15,6 +15,7 @@
   --color-surface: #111111;
   --color-surface-2: #191919;
   --color-surface-3: #262626;
+  --color-surface-4: rgba(11, 11, 11, 0.75);
   --color-divider: #444444;
 
   --color-border: #767676;
@@ -43,10 +44,17 @@
   font-family: 'Jersey 10', sans-serif;
 }
 
+html {
+  /* Prevent iOS from inflating font sizes in landscape */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 button, a, [role="button"], label[for] {
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
+
 
 /* more readable font for these styles */
 input, textarea, select,

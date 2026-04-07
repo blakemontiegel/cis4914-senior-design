@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useParams, useLocation } from 'react-router-dom';
 import Modal from '../components/Modal';
 import VideoUploader from '../components/VideoUploader';
@@ -49,6 +50,7 @@ const GameDetails = () => {
   const [clipDurations, setClipDurations] = useState({});
   const [clipPreviewUrls, setClipPreviewUrls] = useState({});
   const [userTeamRole, setUserTeamRole] = useState(null);
+  const [clipPendingDelete, setClipPendingDelete] = useState(null);
   const showClipsLoadingIndicator = useDelayedLoadingIndicator(isLoadingClips, 1000);
 
   const activeClip = clips[currentClip] || null;
@@ -430,10 +432,17 @@ const GameDetails = () => {
               )}
             </div>
             <div className="video-controls">
-              <button className="play-toggle-btn" onClick={togglePlayPause} disabled={!videoUrl}>
-                <i className={`fas ${isPlaying ? 'fa-pause' : 'fa-play'}`}></i>
-                {isPlaying ? 'Pause' : 'Play'}
-              </button>
+              <div className="video-controls-top-row">
+                <button className="play-toggle-btn" onClick={togglePlayPause} disabled={!videoUrl}>
+                  <i className={`fas ${isPlaying ? 'fa-pause' : 'fa-play'}`}></i>
+                  {isPlaying ? 'Pause' : 'Play'}
+                </button>
+                {activeClip?.uploadedBy?.username && (
+                  <p className="video-uploader">
+                    <i className="fas fa-user"></i> {activeClip.uploadedBy.username}
+                  </p>
+                )}
+              </div>
 
               <div className="time-slider-wrap">
                 <input
@@ -566,7 +575,7 @@ const GameDetails = () => {
                     className="clip-delete-btn"
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleDeleteClip(clip._id);
+                      setClipPendingDelete(clip._id);
                     }}
                     aria-label="Delete clip"
                   >
@@ -592,23 +601,56 @@ const GameDetails = () => {
         </div>
       </Modal>
 
-      <div className="bottom-action-bar">
-        <button
-          className="bar-btn"
-          onClick={() => setShowUploadModal(true)}
-        >
-          <i className="fas fa-cloud-upload-alt"></i>
-          Upload Video
-        </button>
-        <button
-          className={`bar-btn primary ${!selectedTag || !videoUrl ? 'disabled' : ''}`}
-          onClick={handleAddTagMoment}
-          disabled={!selectedTag || !videoUrl}
-        >
-          <i className="fas fa-flag"></i>
-          Tag at {formatSeconds(currentTime)}
-        </button>
-      </div>
+      <Modal
+        isOpen={!!clipPendingDelete}
+        onClose={() => setClipPendingDelete(null)}
+        title="Delete Clip"
+      >
+        <div className="confirm-dialog">
+          <div className="confirm-icon danger">
+            <i className="fas fa-trash-alt" />
+          </div>
+          <p className="confirm-message">Are you sure you want to delete this clip? This cannot be undone.</p>
+          <div className="confirm-actions">
+            <button
+              className="modal-btn modal-btn-cancel"
+              onClick={() => setClipPendingDelete(null)}
+            >
+              Cancel
+            </button>
+            <button
+              className="modal-btn modal-btn-danger"
+              onClick={() => {
+                handleDeleteClip(clipPendingDelete);
+                setClipPendingDelete(null);
+              }}
+            >
+              <i className="fas fa-trash-alt" /> Delete
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      {createPortal(
+        <div className="bottom-action-bar">
+          <button
+            className="bar-btn"
+            onClick={() => setShowUploadModal(true)}
+          >
+            <i className="fas fa-cloud-upload-alt"></i>
+            Upload Video
+          </button>
+          <button
+            className={`bar-btn primary ${!selectedTag || !videoUrl ? 'disabled' : ''}`}
+            onClick={handleAddTagMoment}
+            disabled={!selectedTag || !videoUrl}
+          >
+            <i className="fas fa-flag"></i>
+            Tag at {formatSeconds(currentTime)}
+          </button>
+        </div>,
+        document.body
+      )}
     </div>
   );
 };

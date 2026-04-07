@@ -12,16 +12,21 @@ const profilePictureRoutes = require('./routes/images');
 
 const app = express();
 
-const clientOriginEnv = process.env.CLIENT_ORIGIN;
+const clientOriginEnv = process.env.CLIENT_ORIGIN || '';
+const clientAppUrlEnv = process.env.CLIENT_APP_URL || '';
 
-if (!clientOriginEnv) {
-    throw new Error('Missing CLIENT_ORIGIN. Set it in your environment.');
+const allowedOrigins = Array.from(
+    new Set(
+        `${clientOriginEnv},${clientAppUrlEnv}`
+            .split(',')
+            .map((origin) => origin.trim().replace(/\/+$/, ''))
+            .filter(Boolean)
+    )
+);
+
+if (allowedOrigins.length === 0) {
+    throw new Error('Missing CORS origins. Set CLIENT_ORIGIN and/or CLIENT_APP_URL in your environment.');
 }
-
-const allowedOrigins = clientOriginEnv
-    .split(',')
-    .map((origin) => origin.trim().replace(/\/+$/, ''))
-    .filter(Boolean);
 
 const corsOptions = allowedOrigins.length
     ? {
@@ -31,7 +36,7 @@ const corsOptions = allowedOrigins.length
                 return callback(null, true);
             }
 
-            return callback(new Error('Not allowed by CORS'));
+            return callback(new Error(`Not allowed by CORS: ${origin}`));
         },
       }
     : undefined;
@@ -70,11 +75,15 @@ app.use((err, req, res, next) => {
 });
 
 // Verify critical environment variables before starting
-const requiredEnvVars = ['MONGO_URI', 'JWT_SECRET', 'CLIENT_ORIGIN'];
+const requiredEnvVars = ['MONGO_URI', 'JWT_SECRET'];
 const missingVars = requiredEnvVars.filter(v => !process.env[v]);
 
+if (!process.env.CLIENT_ORIGIN && !process.env.CLIENT_APP_URL) {
+    missingVars.push('CLIENT_ORIGIN or CLIENT_APP_URL');
+}
+
 if (missingVars.length > 0) {
-    console.error(`❌ CRITICAL: Missing required environment variables: ${missingVars.join(', ')}`);
+    console.error(`CRITICAL: Missing required environment variables: ${missingVars.join(', ')}`);
     console.error('Please set these in your .env file before starting the server.');
     process.exit(1);
 }
@@ -82,8 +91,5 @@ if (missingVars.length > 0) {
 const PORT = process.env.PORT || 5001;
 const HOST = '0.0.0.0'; // Listen on all network interfaces
 app.listen(PORT, HOST, () => {
-    console.log(`✅ Server running on port ${PORT}`);
-    console.log(`✅ MongoDB connected (from server startup)`);
-    console.log(`ℹ️  Listening on all interfaces (0.0.0.0:${PORT})`);
-    console.log(`ℹ️  CORS allowed origins: ${process.env.CLIENT_ORIGIN}`);
+    console.log(`Server running on port ${PORT}`);
 });

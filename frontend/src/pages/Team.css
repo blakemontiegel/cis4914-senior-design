@@ -121,7 +121,7 @@
 }
 
 .add-game-card:active {
-    transform: scale(0.95);
+    transform: scale(0.98);
 }
 
 .add-game-card i {
@@ -156,7 +156,7 @@
     margin-bottom: 10px;
     text-decoration: none;
     color: var(--color-text);
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, transform 0.2s;
     filter: drop-shadow(5px 5px 5px var(--color-shadow-white));
 }
 
@@ -165,7 +165,7 @@
 }
 
 .game-card:active {
-    transform: scale(0.95);
+    transform: scale(0.98);
 }
 
 .game-info {
@@ -215,7 +215,7 @@
 }
 
 .invite-tab:active {
-    transform: scale(0.95);
+    transform: scale(0.98);
 }
 
 .invite-tab.active {
@@ -357,6 +357,18 @@
     }
 }
 
+@media (hover: none) {
+    .roster-header:hover { background-color: var(--color-surface-4); }
+    .game-card:hover { background: var(--color-surface-2); }
+    .add-game-card:hover { border-color: var(--color-border); color: var(--color-text-muted); }
+    .invite-tab:not(.active):hover { background: var(--color-surface-3); color: var(--color-text-muted); }
+    .user-search-result:hover { background: transparent; }
+    .roster-card:hover { background: var(--color-surface-2); }
+    .sheet-btn:hover { background: var(--color-surface-2); }
+    .sheet-btn.danger:hover { background: var(--color-surface-2); color: var(--color-error); }
+    .member-clip-item:hover { transform: none; }
+}
+
 .roster-section {
     margin-bottom: 20px;
 }
@@ -366,6 +378,20 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 10px;
+    background-color: var(--color-surface-4);
+    border-radius: 50px;
+    padding: 10px 20px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.roster-header:hover {
+    background-color: var(--color-surface-3);
+}
+
+.roster-header:active {
+    transform: scale(0.98);
 }
 
 .roster-heading {
@@ -396,7 +422,7 @@
 }
 
 .roster-toggle-btn:active {
-    transform: scale(0.95);
+    transform: scale(0.98);
 }
 
 .roster-count {
@@ -589,11 +615,11 @@
     font-family: 'Jersey 10', sans-serif;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
-    transition: background-color 0.2s, transform 0.2s;
+    transition: background-color 0.2s, color 0.2s, transform 0.2s;
 }
 
 .request-btn:active {
-    transform: scale(0.95);
+    transform: scale(0.98);
 }
 
 .request-btn.accept {
@@ -680,7 +706,7 @@
     font-size: 14px;
     color: var(--color-text-muted);
     text-align: center;
-    margin: 0 0 15px;
+    margin: -10px 0 20px;
     font-family: 'Saira', sans-serif;
     text-transform: capitalize;
 }
@@ -709,7 +735,7 @@
 }
 
 .sheet-btn:active {
-    transform: scale(0.95);
+    transform: scale(0.98);
 }
 
 .sheet-btn.danger {
@@ -750,7 +776,7 @@
 }
 
 .member-clip-item:active {
-    transform: scale(0.95);
+    transform: scale(0.98);
 }
 
 .member-clip-thumb {

@@ -34,9 +34,6 @@ const Modal = ({ isOpen, onClose, title, children }) => {
   useEffect(() => {
     if (!isOpen) return;
     const scrollY = window.scrollY;
-    // Lock scroll on html (not body) — avoids collapsing body height which
-    // triggers iOS to recalculate env(safe-area-inset-bottom) and dvh,
-    // causing the persistent gap after the modal closes.
     document.documentElement.style.overflow = 'hidden';
     return () => {
       document.documentElement.style.overflow = '';

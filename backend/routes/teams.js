@@ -575,7 +575,7 @@ router.get('/:teamId/kids', auth, async (req, res) => {
       return res.status(403).json({ message: 'Access denied' });
     }
 
-    const kids = await Kid.find({ team: teamId }).sort({ createdAt: -1 });
+    const kids = await Kid.find({ team: teamId, guardianUser: req.user.id }).sort({ createdAt: -1 });
     return res.json(kids);
   } catch (err) {
     console.error('List kids error:', err);

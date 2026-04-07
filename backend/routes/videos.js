@@ -107,6 +107,7 @@ router.get('/', auth, async (req, res) => {
     }
 
     const videos = await Video.find({ match: match._id })
+      .populate('uploadedBy', 'username')
       .sort({ createdAt: -1 });
 
     res.json(videos);
