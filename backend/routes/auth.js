@@ -8,14 +8,24 @@ const { sendVerificationEmail, sendPasswordResetEmail } = require('../utils/emai
 const router = express.Router();
 
 const VERIFICATION_TOKEN_HOURS = 24;
-const CLIENT_APP_URL = 'https://jettnguyen.github.io/Sideline';
 
 const makeToken = () => crypto.randomBytes(32).toString('hex');
 const hashToken = (token) =>
     crypto.createHash('sha256').update(token).digest('hex');
 
 const buildTokenUrl = (token, param) => {
-    return `${CLIENT_APP_URL}/#/login?${param}=${token}`;
+    const clientBase =
+        process.env.CLIENT_APP_URL ||
+        process.env.CLIENT_ORIGIN?.split(',')[0]?.trim() ||
+        'http://localhost:3000';
+
+    return `${clientBase}/#/login?${param}=${token}`;
+};
+
+const isValidPassword = (password) => {
+    if (typeof password !== 'string') return false;
+
+    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/.test(password);
 };
 
 
@@ -30,6 +40,12 @@ router.post('/register', async (req, res) => {
 
         if(!username || !email || !password) {
             return res.status(400).json({ message: 'Missing required fields' });
+        }
+
+        if (!isValidPassword(password)) {
+            return res.status(400).json({
+                message: 'Password must be at least 8 characters and include uppercase, lowercase, number, and special character.',
+            });
         }
 
         const escapedUsername = username.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -59,19 +75,15 @@ router.post('/register', async (req, res) => {
         });
 
         const verificationUrl = buildTokenUrl(rawToken, 'verifyToken');
-        sendVerificationEmail({
+
+        await sendVerificationEmail({
             to: user.email,
             username: user.username,
             verificationUrl,
-        }).catch((emailErr) => {
-            console.warn(
-                'Registration verification email failed:',
-                emailErr?.code || emailErr?.message || 'unknown-error'
-            );
         });
 
         res.status(201).json({
-            message: 'Account created. Please check your email to verify your account. If email does not arrive, use "Resend verification" on the login page.',
+            message: 'Account created. Please check your email to verify your account.',
             requiresEmailVerification: true,
         });
     } catch (err) {
@@ -119,27 +131,18 @@ router.post('/resend-verification', async (req, res) => {
         const email = req.body?.email?.trim().toLowerCase();
         const providedUsername = req.body?.username?.trim();
 
-        if (!email && !providedUsername) {
-            return res.status(400).json({ message: 'Email or username is required' });
+        if (!email) {
+            return res.status(400).json({ message: 'Email is required' });
         }
 
-        let user = null;
-
-        if (email) {
-            user = await User.findOne({ email });
-        }
-
-        if (!user && providedUsername) {
-            const escapedUsername = providedUsername.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            user = await User.findOne({ username: new RegExp(`^${escapedUsername}$`, 'i') });
-        }
+        const user = await User.findOne({ email });
 
         if (!user) {
-            return res.status(404).json({ message: 'No account found with that email or username' });
+            return res.status(404).json({ message: 'No account found with that email' });
         }
 
-        if (email && providedUsername && user.email !== email) {
-            return res.status(400).json({ message: 'Provided email and username do not match the same account' });
+        if (providedUsername && user.username !== providedUsername) {
+            return res.status(400).json({ message: 'Provided email does not match the entered username' });
         }
 
         if (user.isEmailVerified) {
@@ -156,18 +159,13 @@ router.post('/resend-verification', async (req, res) => {
 
         const verificationUrl = buildTokenUrl(rawToken, 'verifyToken');
 
-        sendVerificationEmail({
+        await sendVerificationEmail({
             to: user.email,
             username: user.username,
             verificationUrl,
-        }).catch((emailErr) => {
-            console.warn(
-                'Resend verification email failed:',
-                emailErr?.code || emailErr?.message || 'unknown-error'
-            );
         });
 
-        res.json({ message: 'Verification email sent (or queued). Please check your inbox.' });
+        res.json({ message: 'Verification email sent' });
     } catch (err) {
         console.error('Resend verification error:', err);
         res.status(500).json({ message: 'Server error' });
@@ -198,15 +196,9 @@ router.post('/request-password-reset', async (req, res) => {
 
         const resetUrl = buildTokenUrl(rawToken, 'resetToken');
 
-        sendPasswordResetEmail({ to: user.email, username: user.username, resetUrl })
-            .catch((emailErr) => {
-                console.warn(
-                    'Password reset email send failed:',
-                    emailErr?.code || emailErr?.message || 'unknown-error'
-                );
-            });
+        await sendPasswordResetEmail({ to: user.email, username: user.username, resetUrl });
 
-        res.json({ message: 'Password reset email sent (or queued). Check your inbox.' });
+        res.json({ message: 'Password reset email sent' });
     } catch (err) {
         console.error('Request password reset error:', err);
         res.status(500).json({ message: 'Server error' });
@@ -219,6 +211,12 @@ router.post('/reset-password', async (req, res) => {
         const { token, password } = req.body || {};
         if (!token || !password) {
             return res.status(400).json({ message: 'Token and new password are required' });
+        }
+
+        if (!isValidPassword(password)) {
+            return res.status(400).json({
+                message: 'Password must be at least 8 characters and include uppercase, lowercase, number, and special character.',
+            });
         }
 
         const tokenHash = hashToken(token);
@@ -278,11 +276,6 @@ router.post('/login', async (req, res) => {
                 message: 'Please verify your email before logging in.',
                 requiresEmailVerification: true,
             });
-        }
-
-        if (!process.env.JWT_SECRET) {
-            console.error('CRITICAL: JWT_SECRET environment variable not set');
-            return res.status(500).json({ message: 'Server configuration error. Please contact support.' });
         }
 
         const token = jwt.sign(

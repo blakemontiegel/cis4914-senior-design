@@ -254,19 +254,28 @@ const Profile = () => {
       case 'photo':
         setPhotoStatus('Photo updated');
         break;
-      case 'reset':
+      case 'reset': {
+        const resetEmail = email.trim().toLowerCase();
+
+        if (!resetEmail) {
+          setProfileError('Email is required.');
+          return;
+        }
+
         try {
           setIsSendingPasswordReset(true);
-          await api.post('/auth/request-password-reset', { email: email.trim() });
-          setPasswordStatus('Reset link sent');
+          const res = await api.post('/auth/request-password-reset', { email: resetEmail });
+
+          setPasswordStatus(res.data?.message || 'Password reset email sent');
         } catch (err) {
-          console.error('Request password reset error:', err);
-          setProfileError(err.response?.data?.message || 'Could not send reset link.');
+          console.error('Send password reset email error:', err.response?.data || err);
+          setProfileError(err.response?.data?.message || 'Could not send password reset email.');
           return;
         } finally {
           setIsSendingPasswordReset(false);
         }
         break;
+      }
       case 'team': {
         if (payload?.index == null) break;
         const team = teams[payload.index];
