@@ -1,11 +1,32 @@
 const nodemailer = require('nodemailer');
 
 const EMAIL_ENABLED = String(process.env.EMAIL_ENABLED ?? 'true').toLowerCase() === 'true';
+const BREVO_API_KEY = process.env.BREVO_API_KEY;
 const hasSmtpConfig =
     !!process.env.EMAIL_HOST &&
     !!process.env.EMAIL_USER &&
     !!process.env.EMAIL_PASS &&
     !!process.env.EMAIL_FROM;
+
+const parseSender = (fromValue) => {
+    const fallback = { email: fromValue, name: 'Sideline' };
+
+    if (!fromValue) {
+        return fallback;
+    }
+
+    const match = fromValue.match(/^(.*?)\s*<([^>]+)>$/);
+    if (!match) {
+        return fallback;
+    }
+
+    const name = match[1].trim().replace(/^"|"$/g, '');
+    const email = match[2].trim();
+    return {
+        name: name || 'Sideline',
+        email,
+    };
+};
 
 const transporter = EMAIL_ENABLED && hasSmtpConfig
     ? nodemailer.createTransport({
@@ -35,6 +56,33 @@ else {
 }
 
 const sendMailSafe = async ({ to, subject, html }) => {
+    if (BREVO_API_KEY) {
+        const sender = parseSender(process.env.EMAIL_FROM);
+        const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+            method: 'POST',
+            headers: {
+                'accept': 'application/json',
+                'api-key': BREVO_API_KEY,
+                'content-type': 'application/json',
+            },
+            body: JSON.stringify({
+                sender,
+                to: [{ email: to }],
+                subject,
+                htmlContent: html,
+            }),
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            const error = new Error(`Brevo API error (${response.status}): ${errorText}`);
+            error.code = `BREVO_${response.status}`;
+            throw error;
+        }
+
+        return response.json().catch(() => ({ ok: true }));
+    }
+
     if (!transporter) {
         return { skipped: true, reason: 'email-disabled-or-misconfigured' };
     }
