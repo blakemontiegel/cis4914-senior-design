@@ -11,7 +11,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/blakemontiegel/cis4914-senior-design">
-    <img src="frontend/src/logo.svg" alt="Sideline Logo" width="140" height="140">
+    <img src="frontend/src/logo.svg" alt="Sideline Logo" width="200" height="200">
   </a>
 
   <h1 align="center"><a href="https://jettnguyen.github.io/Sideline">Sideline</a></h1>
@@ -80,39 +80,27 @@ Sideline is a full-stack web application for organizing sports teams, coordinati
 <table align="center">
   <tr>
     <th>Login</th>
-  </tr>
-  <tr>
-    <td><img src="docs/screenshots/Login.png" alt="Login Screen" width="320" /></td>
-  </tr>
-  <tr>
     <th>Dashboard</th>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/Dashboard.png" alt="Dashboard Screen" width="320" /></td>
+    <td><img src="docs/screenshots/Login.png" alt="Login Screen" width="250" /></td>
+    <td><img src="docs/screenshots/Dashboard.png" alt="Dashboard Screen" width="250" /></td>
   </tr>
   <tr>
     <th>Team Page</th>
-  </tr>
-  <tr>
-    <td><img src="docs/screenshots/Team.png" alt="Team Screen" width="320" /></td>
-  </tr>
-  <tr>
     <th>Game Details</th>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/Game.png" alt="Game Details Screen" width="320" /></td>
+    <td><img src="docs/screenshots/Team.png" alt="Team Screen" width="250" /></td>
+    <td><img src="docs/screenshots/Game.png" alt="Game Details Screen" width="250" /></td>
   </tr>
   <tr>
     <th>Video Upload</th>
-  </tr>
-  <tr>
-    <td><img src="docs/screenshots/Upload.png" alt="Video Upload Screen" width="320" /></td>
-  </tr>
-  <tr>
     <th>Profile</th>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/Profile.png" alt="Profile Screen" width="320" /></td>
+    <td><img src="docs/screenshots/Upload.png" alt="Video Upload Screen" width="250" /></td>
+    <td><img src="docs/screenshots/Profile.png" alt="Profile Screen" width="250" /></td>
   </tr>
 </table>
 
