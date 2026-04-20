@@ -5,7 +5,7 @@
 [![Forks](https://img.shields.io/github/forks/blakemontiegel/cis4914-senior-design.svg?style=for-the-badge)](https://github.com/blakemontiegel/cis4914-senior-design/network/members)
 [![Stargazers](https://img.shields.io/github/stars/blakemontiegel/cis4914-senior-design.svg?style=for-the-badge)](https://github.com/blakemontiegel/cis4914-senior-design/stargazers)
 [![Issues](https://img.shields.io/github/issues/blakemontiegel/cis4914-senior-design.svg?style=for-the-badge)](https://github.com/blakemontiegel/cis4914-senior-design/issues)
-[![License](https://img.shields.io/github/license/blakemontiegel/cis4914-senior-design.svg?style=for-the-badge)](https://github.com/blakemontiegel/cis4914-senior-design/license)
+[![License](https://img.shields.io/github/license/blakemontiegel/cis4914-senior-design.svg?style=for-the-badge)](https://github.com/blakemontiegel/cis4914-senior-design/blob/main/LICENSE)
 
 </div>
 
